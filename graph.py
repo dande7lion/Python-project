@@ -29,7 +29,7 @@ class Graph:
         self.number_of_edges = self.number_of_edges + 1
 
     def find_vertex(self, vertex: str) -> int:
-        for v in range(self.number_of_edges):
+        for v in range(self.number_of_vertices):
             if self.vertices[v].vertex == vertex:
                 return v
         return -1
@@ -39,7 +39,7 @@ class Graph:
         if v == -1:
             print(f"There is no vertex {vertex}")
             return
-        self.vertices[v].value = value
+        self.vertices[v] = Vertex(vertex, value)
 
     def get_vertex_value(self, vertex: str) -> int:
         v = self.find_vertex(vertex)
@@ -48,6 +48,7 @@ class Graph:
         print(f"There is no vertex {vertex}")
         return -1111111
 
+    # are neighbours?
     def adjacent(self, vertex1: str, vertex2: str) -> bool:
         v1 = self.find_vertex(vertex1)
         v2 = self.find_vertex(vertex2)
@@ -98,13 +99,54 @@ class Graph:
                 if i == j:
                     continue
                 second_team = (graph.vertices[j].vertex)[0:index]
-                if(firstTeam == secondTeam or newTeam == secondTeam):
+                if(first_team == second_team or new_team == second_team):
                     graph.add_edge(graph.vertices[i].vertex, graph.vertices[j].vertex)
                 else:
                     index2 = (graph.vertices[j].vertex).find(" ")
-                    secondTeam = (graph.vertices[j].vertex)[index2+3:]
-                    if(firstTeam == secondTeam or newTeam == secondTeam):
-                        graph.addEdge(graph.vertices[i].vertex, graph.vertices[j].vertex)
+                    second_team = (graph.vertices[j].vertex)[index2+3:]
+                    if(first_team == second_team or new_team == second_team):
+                        graph.add_edge(graph.vertices[i].vertex, graph.vertices[j].vertex)
+
+        return graph
 
                 
+
+    def color_the_graph(self):
+        n = self.number_of_vertices
+        CT = []     # list of colors
+        C = []      # list of bool's
+        i = 0
+        v = 0
+
+        for i in range (n):
+            CT[i] = -1
+
+        CT[0] = 0   # first vertex's color 
+
+        for v in range (1, n):
+            for i in range(n):
+                C[i] = False
+            for j in range (n):
+                if self.adjacent(self.vertices[v].vertex, self.vertices[j].vertex):
+                    if CT[self.vertices[j].value] > -1:
+                        C[CT[self.vertices[j].value]] = True
+            for i in range (n):
+                if C[i]:
+                    break
+            CT[v] = i
+
+        max = CT[0]
+        for s in range (1, n):
+            if max < CT[s]:
+                max = CT[s]
+
+        for v in range (max+1):
+            print(f"Runda {v+1}: ")
+            for k in range (n):
+                if v != CT[k]:
+                    continue
+                print(f"{self.vertices[k].vertex}")
+
+
+
 
