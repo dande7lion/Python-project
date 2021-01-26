@@ -1,5 +1,6 @@
 from collections import namedtuple
 
+# Both the vertex and the edge have a name and value
 Vertex = namedtuple('Vertex', ['vertex', 'value'])
 Edge = namedtuple('Edge', ['edge', 'value'])
 
@@ -15,20 +16,22 @@ class Graph:
                 self.edges[i][j] = Edge(".", 0)
 
     def add_vertex(self, new_vertex: str) -> None:
+        # while creating a new vertex, we give it default value, which is -1
         self.vertices.append(Vertex(new_vertex, "-1"))
         self.number_of_vertices = self.number_of_vertices + 1
 
     def add_edge(self, vertex1: str, vertex2: str) -> None:
+        # firstly, we have to find specific vertices
         v1 = self.find_vertex(vertex1)
         v2 = self.find_vertex(vertex2)
+        # when no vertex was found:
         if v1 == -1 or v2 == -1:
             print("Incorrect vertices")
             return
         tmp = self.edges[v1][v2].value
+        # value "1" means that there is a edge between v1 and v2
         self.edges[v1][v2] = Edge("1", tmp)
         self.edges[v2][v1] = Edge("1", tmp)
-        # self.edges[v1][v2].edge = "1"
-        # self.edges[v2][v1].edge = "1"
         self.number_of_edges = self.number_of_edges + 1
 
     def find_vertex(self, vertex: str) -> int:
@@ -76,18 +79,23 @@ class Graph:
     def create_graph(self, names: list):
 
         # number of teams
-        n = len(names)        
+        n = len(names)
         graph = Graph()
+        # in tmp we'll have the vertices' names
         tmp = ''
+        # in value - vertices' values
         value = 0
 
         for i in range(n-1):
             for j in range(i+1,n):
+                # prepare vertex name
                 tmp = names[i] + ' - ' + names[j]
                 graph.add_vertex(tmp)
                 graph.set_vertex_value(tmp, value)
+                # each vertex has different value - it will be needed in color_the_graph function
                 value = value + 1
 
+        # vertex's name looks like - 'A - B' - A is the left_team, B is the right_team
         left_team = ''
         right_team = ''
         next_left_team = ''
@@ -106,6 +114,7 @@ class Graph:
                 second_match_index = (graph.vertices[j].vertex).find(" ")
                 next_left_team = (graph.vertices[j].vertex)[0:second_match_index]
                 next_right_team = (graph.vertices[j].vertex)[second_match_index+3:]
+                # we need to add edges between vertices that can not be played at one round
                 if left_team == next_left_team or left_team == next_right_team or right_team == next_right_team or right_team == next_right_team:
                     graph.add_edge(graph.vertices[i].vertex, graph.vertices[j].vertex)
 
@@ -118,7 +127,7 @@ class Graph:
         # list of colors
         CT = []   
 
-        # list of bool's  
+        # list of used colors (by neighbors)
         C = []      
         i = 0
         v = 0
@@ -131,23 +140,25 @@ class Graph:
         CT[0] = 0   
 
         for v in range (1, n):
+            # we reset the list of used colors
             for i in range(n):
                 C[i] = False
             for j in range(n):
+                # we check if two vertex are neighbor
                 if self.adjacent(self.vertices[v].vertex, self.vertices[j].vertex):
+                    # and if our current's vertex neighbor already has a color, we have to mark its color like used
                     if CT[self.vertices[j].value] > -1:
                         C[CT[self.vertices[j].value]] = True
+            # we're looking for first free color
             for i in range(0, n):
                 if not C[i]:
                     break
             CT[v] = i
 
-        max = CT[0]
-        for s in range (1, n):
-            if max < CT[s]:
-                max = CT[s]
+        # we're findind the number of colors (rounds)
+        number_of_colors = max(CT)
 
-        for v in range (max+1):
+        for v in range (number_of_colors+1):
             print(f"Round {v+1}: ")
             for k in range (n):
                 if v != CT[k]:
