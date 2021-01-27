@@ -1,4 +1,5 @@
 from collections import namedtuple
+from datetime import date, timedelta
 
 # Both the vertex and the edge have a name and value
 Vertex = namedtuple('Vertex', ['vertex', 'value'])
@@ -14,6 +15,10 @@ class Graph:
         for i in range(self.number_of_teams):
             for j in range(self.number_of_teams):
                 self.edges[i][j] = Edge(".", 0)
+        self.first_match_year = ""
+        self.first_match_month = ""
+        self.first_match_day = ""
+        self.date_list = []
 
     def add_vertex(self, new_vertex: str) -> None:
         # while creating a new vertex, we give it default value, which is -1
@@ -165,13 +170,14 @@ class Graph:
         # we're findind the number of colors (rounds)
         number_of_colors = max(CT)
 
+        self.prepare_date_list(number_of_colors)
+
         for v in range (number_of_colors+1):
-            print(f"\nRound {v+1}: ")
+            print(f"\nRound {v+1} - {self.date_list[v]}:")
             for k in range (n):
                 if v != CT[k]:
                     continue
                 print(f"{self.vertices[k].vertex}")
-
 
     def create_graph_file(self) -> None:
         graph_file = open("graph_file", "w")
@@ -183,6 +189,19 @@ class Graph:
                     continue
                 graph_file.write(f"\t\"{self.vertices[i].vertex}\" -- \"{self.vertices[j].vertex}\";\n")
                 self.remove_edge(self.vertices[j].vertex, self.vertices[i].vertex)
-
         graph_file.write("}\n")
+
+
+    def set_first_match_date(self, year: int, month: int, day: int) -> None:
+        self.first_match_year = year
+        self.first_match_month = month
+        self.first_match_day = day
+
+    def prepare_date_list(self, number_of_rounds: int) -> None:
+        match_date = date(self.first_match_year, self.first_match_month, self.first_match_day)
+        self.date_list.append(match_date)
+        for i in range(number_of_rounds):
+            match_date += timedelta(days = 7)
+            self.date_list.append(match_date)
+
 
