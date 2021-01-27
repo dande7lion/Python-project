@@ -21,6 +21,14 @@ class Graph:
         self.number_of_vertices = self.number_of_vertices + 1
 
     def add_edge(self, vertex1: str, vertex2: str) -> None:
+        self.change_edge(vertex1, vertex2, "1")
+        self.number_of_edges = self.number_of_edges + 1
+
+    def remove_edge(self, vertex1: str, vertex2:str) -> None:
+        self.change_edge(vertex1, vertex2, ".")
+        self.number_of_edges = self.number_of_edges - 1
+
+    def change_edge(self, vertex1: str, vertex2:str, change: str) -> None:
         # firstly, we have to find specific vertices
         v1 = self.find_vertex(vertex1)
         v2 = self.find_vertex(vertex2)
@@ -30,9 +38,8 @@ class Graph:
             return
         tmp = self.edges[v1][v2].value
         # value "1" means that there is a edge between v1 and v2
-        self.edges[v1][v2] = Edge("1", tmp)
-        self.edges[v2][v1] = Edge("1", tmp)
-        self.number_of_edges = self.number_of_edges + 1
+        self.edges[v1][v2] = Edge(change, tmp)
+        self.edges[v2][v1] = Edge(change, tmp)
 
     def find_vertex(self, vertex: str) -> int:
         for v in range(self.number_of_vertices):
@@ -122,7 +129,7 @@ class Graph:
 
                  
 
-    def color_the_graph(self):
+    def color_the_graph(self) -> None:
         n = self.number_of_vertices
         # list of colors
         CT = []   
@@ -166,5 +173,16 @@ class Graph:
                 print(f"{self.vertices[k].vertex}")
 
 
+    def create_grapf_file(self) -> None:
+        graph_file = open("graph_file", "w")
+        graph_file.write("graph G{\n")
 
+        for i in range(self.number_of_vertices):
+            for j in range(self.number_of_vertices):
+                if self.edges[i][j] == "." or i == j:
+                    continue
+                graph_file.write(f"\t\"{self.vertices[i].vertex}\" -- \"{self.vertices[j].vertex}\";\n")
+                self.remove_edge(self.vertices[j].vertex, self.vertices[i].vertex)
+
+        graph_file.write("}\n")
 
