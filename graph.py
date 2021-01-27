@@ -166,20 +166,20 @@ class Graph:
         number_of_colors = max(CT)
 
         for v in range (number_of_colors+1):
-            print(f"Round {v+1}: ")
+            print(f"\nRound {v+1}: ")
             for k in range (n):
                 if v != CT[k]:
                     continue
                 print(f"{self.vertices[k].vertex}")
 
 
-    def create_grapf_file(self) -> None:
+    def create_graph_file(self) -> None:
         graph_file = open("graph_file", "w")
         graph_file.write("graph G{\n")
 
         for i in range(self.number_of_vertices):
             for j in range(self.number_of_vertices):
-                if self.edges[i][j] == "." or i == j:
+                if self.edges[i][j].edge == "." or i == j:
                     continue
                 graph_file.write(f"\t\"{self.vertices[i].vertex}\" -- \"{self.vertices[j].vertex}\";\n")
                 self.remove_edge(self.vertices[j].vertex, self.vertices[i].vertex)

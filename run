@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python main.py && dot -Tpng graph_file -o graph_file.png && eog graph_file.png
