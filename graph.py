@@ -6,8 +6,8 @@ Vertex = namedtuple('Vertex', ['vertex', 'value'])
 Edge = namedtuple('Edge', ['edge', 'value'])
 
 class Graph:
-    def __init__(self):
-        self.number_of_teams = 50
+    def __init__(self, number_of_teams = 50):
+        self.number_of_teams = number_of_teams
         self.number_of_vertices = 0
         self.number_of_edges = 0
         self.vertices = []
@@ -21,19 +21,23 @@ class Graph:
         self.date_list = []
 
     def add_vertex(self, new_vertex: str) -> None:
+        """ Add a new vertex to the existing graph """
         # while creating a new vertex, we give it default value, which is -1
         self.vertices.append(Vertex(new_vertex, "-1"))
         self.number_of_vertices = self.number_of_vertices + 1
 
     def add_edge(self, vertex1: str, vertex2: str) -> None:
+        """ Add edge between two existing vertices """
         self.change_edge(vertex1, vertex2, "1")
         self.number_of_edges = self.number_of_edges + 1
 
     def remove_edge(self, vertex1: str, vertex2:str) -> None:
+        """ Remove edge between vertex1 and vertex2 """
         self.change_edge(vertex1, vertex2, ".")
         self.number_of_edges = self.number_of_edges - 1
 
     def change_edge(self, vertex1: str, vertex2:str, change: str) -> None:
+        """ Change edge value """
         # firstly, we have to find specific vertices
         v1 = self.find_vertex(vertex1)
         v2 = self.find_vertex(vertex2)
@@ -47,12 +51,14 @@ class Graph:
         self.edges[v2][v1] = Edge(change, tmp)
 
     def find_vertex(self, vertex: str) -> int:
+        """ Find vertex in the graph or return -1 if it does not exist """
         for v in range(self.number_of_vertices):
             if self.vertices[v].vertex == vertex:
                 return v
         return -1
 
     def set_vertex_value(self, vertex: str, value: int) -> None:
+        """ Set the value of the existing vertex """
         v = self.find_vertex(vertex)
         if v == -1:
             print(f"There is no vertex {vertex}")
@@ -60,14 +66,15 @@ class Graph:
         self.vertices[v] = Vertex(vertex, value)
 
     def get_vertex_value(self, vertex: str) -> int:
+        """ Give th vertex name, and get its value """
         v = self.find_vertex(vertex)
         if v != -1:
             return self.vertices[v].value
         print(f"There is no vertex {vertex}")
         return -1111111
 
-    # are neighbours?
     def adjacent(self, vertex1: str, vertex2: str) -> bool:
+        """ Check if there is an edge between vertex1 and vertex2 """
         v1 = self.find_vertex(vertex1)
         v2 = self.find_vertex(vertex2)
         if v1 == -1 or v2 == -1:
@@ -78,6 +85,7 @@ class Graph:
         return True
 
     def set_edge_value(self, vertex1: str, vertex2: str, value: int) -> None:
+        """ Set the value of the existing edge """
         v1 = self.find_vertex(vertex1)
         v2 = self.find_vertex(vertex2)
         if v1 == -1 or v2 == -1:
@@ -135,6 +143,7 @@ class Graph:
                  
 
     def color_the_graph(self) -> None:
+        """ Color the graph alghoritm """
         n = self.number_of_vertices
         # list of colors
         CT = []   
@@ -180,6 +189,7 @@ class Graph:
                 print(f"{self.vertices[k].vertex}")
 
     def create_graph_file(self) -> None:
+        """ Create file which will be used to draw the graph """
         graph_file = open("graph_file", "w")
         graph_file.write("graph G{\n")
 
@@ -198,6 +208,7 @@ class Graph:
         self.first_match_day = day
 
     def prepare_date_list(self, number_of_rounds: int) -> None:
+        """ Prepare list of days when matches will be played """
         match_date = date(self.first_match_year, self.first_match_month, self.first_match_day)
         self.date_list.append(match_date)
         for i in range(number_of_rounds):

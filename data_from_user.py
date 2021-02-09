@@ -9,6 +9,7 @@ class DataFromUser:
         self.teams_names = []
 
     def start(self):
+        """ The main function that will ask user all necessary questions """
         self.ask_user_for_number_of_teams()
         self.ask_user_for_names()
         self.ask_user_first_match_data()
